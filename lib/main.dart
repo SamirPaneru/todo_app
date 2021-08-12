@@ -13,11 +13,19 @@ class TODOAPP extends StatefulWidget {
 }
 
 class _TODOAPPState extends State<TODOAPP> {
-  var listTODO = ['Hello', 'Hi'];
+  late String value;
+
+  var listTODO = ['', 'Hello', 'Hi'];
 
   addToDo(String item) {
     setState(() {
-      listTODO.add(item);
+      listTODO.add(item); // append garxa
+    });
+  }
+
+  removeToDo(int index) {
+    setState(() {
+      listTODO.removeAt(index);
     });
   }
 
@@ -30,15 +38,38 @@ class _TODOAPPState extends State<TODOAPP> {
         ),
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
-          onPressed: () {},
+          onPressed: () {
+            addToDo(value);
+          },
         ),
         body: ListView.builder(
             itemCount: listTODO.length,
             itemBuilder: (context, index) {
-              return ListTile(
-                leading: Icon(Icons.info),
-                title: Text('${listTODO[index]}'),
-              );
+              return index == 0
+                  ? Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: TextFormField(
+                        textAlign: TextAlign.center,
+                        decoration: InputDecoration(
+                          hintText: "Add Item",
+                        ),
+                        onChanged: (val) {
+                          setState(() {
+                            value = val;
+                          });
+                        },
+                      ),
+                    )
+                  : ListTile(
+                      leading: Icon(Icons.info),
+                      trailing: IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () {
+                          removeToDo(index);
+                        },
+                      ),
+                      title: Text('${listTODO[index]}'),
+                    );
             }));
   }
 }
