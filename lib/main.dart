@@ -13,6 +13,9 @@ class TODOAPP extends StatefulWidget {
 }
 
 class _TODOAPPState extends State<TODOAPP> {
+  // null xaina vanera bujinxa "late" le
+  // used while declaring a non-nullable variable that's..
+  // initialised after it's declaration
   late String value;
 
   var listTODO = ['', 'Hello', 'Hi'];
