@@ -38,6 +38,12 @@ class _TODOAPPState extends State<TODOAPP> {
 
   set todoId(Future<int> todoId) {}
 
+  removeToDo(int index) {
+    setState(() {
+      lists.removeAt(index);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -97,9 +103,11 @@ class _TODOAPPState extends State<TODOAPP> {
                           // int? x;
                           // currentTodo = Todo(todos: '${lists[index].todos}');
                           // x = currentTodo.id;
+                          currenttodo = lists.elementAt(index);
 
-                          await TodoDatabase.instance.deleteTodo(index);
-
+                          await TodoDatabase.instance
+                              .deleteTodo(currenttodo.id!);
+                          removeToDo(index);
                           refreshTodo();
                         }));
               },
