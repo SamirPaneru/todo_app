@@ -12,6 +12,11 @@ class Todo {
 
   // Used to insert row into database including id field
   Map<String, dynamic> toMap() {
-    return {todosColumn: this.todos};
+    return {idColumn: this.id, todosColumn: this.todos};
   }
+
+  static Todo fromMap(Map<String, Object?> map) => Todo(
+        id: map[idColumn] as int?,
+        todos: map[todosColumn] as String,
+      );
 }

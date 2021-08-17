@@ -10,29 +10,50 @@ void main() => runApp(MaterialApp(
     ));
 
 class TODOAPP extends StatefulWidget {
-  const TODOAPP({Key? key}) : super(key: key);
+  final int? number;
+  final String? todos;
+  // final ValueChanged<int> onChangedNumber;
+  // final ValueChanged<String> onChangedTodos;
+  final int? todoId;
+  final Todo? currentTodo;
+
+  const TODOAPP({
+    Key? key,
+    this.number = 0,
+    this.todos = '',
+    // required this.onChangedNumber,
+    // required this.onChangedTodos,
+    this.todoId,
+    this.currentTodo,
+  }) : super(key: key);
 
   @override
   _TODOAPPState createState() => _TODOAPPState();
 }
 
 class _TODOAPPState extends State<TODOAPP> {
-  final TodoDatabase _todoDatabase = TodoDatabase();
+  List<Todo> lists = [];
 
-  // final textController = TextEditingController();
+  late Todo currenttodo;
 
-  // null xaina vanera bujinxa "late" le
-  // used while declaring a non-nullable variable that's..
-  // initialised after it's declaration
-  late String value;
-
-  late List<Todo> lists = [];
-
-  late Todo currentTodo;
+  set todoId(Future<int> todoId) {}
 
   @override
+  void initState() {
+    super.initState();
+
+    refreshTodo();
+  }
+
+  Future refreshTodo() async {
+    this.lists = await TodoDatabase.instance.getAllTodo();
+    setState(() {
+      lists = lists;
+    });
+  }
+
   Widget build(BuildContext context) {
-    // final TodoDatabase _todoDatabase = TodoDatabase();
+    // show();
     return Scaffold(
       appBar: AppBar(
         title: Text("TODO App"),
@@ -41,17 +62,8 @@ class _TODOAPPState extends State<TODOAPP> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () async {
-          print("Hello");
-          // addToDo(value);
-          // currentTodo = Todo(todos: );
-          _todoDatabase.insertTodo(currentTodo);
-          // print(_todoDatabase.getAllTodo().toString());
-          List<Todo> list = await _todoDatabase.getAllTodo();
-
-          setState(() {
-            lists = list;
-          });
-          print(lists.length);
+          this.todoId = TodoDatabase.instance.insertTodo(currenttodo);
+          refreshTodo();
         },
       ),
       body: Column(
@@ -62,9 +74,8 @@ class _TODOAPPState extends State<TODOAPP> {
               hintText: "Add TODO",
             ),
             onChanged: (text) {
-              currentTodo = Todo(todos: text);
+              currenttodo = Todo(todos: text);
             },
-            // controller: textController,
           ),
           Expanded(
             child: ListView.builder(
@@ -72,18 +83,24 @@ class _TODOAPPState extends State<TODOAPP> {
               shrinkWrap: true,
               itemCount: lists.length,
               itemBuilder: (context, index) {
+                // currenttodo = lists.elementAt(index);
                 return ListTile(
                     leading: Icon(Icons.info),
                     title: Text('${lists[index].todos}'),
-                    //title: Text('${todos[index].todos}'),
                     trailing: IconButton(
                         icon: Icon(Icons.delete),
                         onPressed: () async {
-                          await _todoDatabase.deleteTodo(index);
-                          List<Todo> list = await _todoDatabase.getAllTodo();
-                          setState(() {
-                            lists = list;
-                          });
+                          // currentTodo =
+                          //     await Todo(todos: '${lists[index].todos}');
+                          // int? x = currentTodo.id;
+                          // _todoDatabase.deleteTodo(x);
+                          // int? x;
+                          // currentTodo = Todo(todos: '${lists[index].todos}');
+                          // x = currentTodo.id;
+
+                          await TodoDatabase.instance.deleteTodo(index);
+
+                          refreshTodo();
                         }));
               },
             ),
